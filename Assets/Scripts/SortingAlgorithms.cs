@@ -5,6 +5,9 @@ using UnityEngine;
 
 public static class SortingAlgorithms
 {
+
+    //Time Complexity: W: O(log²n)
+    //Aux Space: O(n.log2n)
     #region BitonicSort
 
     public static IEnumerator BitonicSort<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
@@ -79,6 +82,8 @@ public static class SortingAlgorithms
 
     #endregion
 
+    //Time Complexity: O(n2)
+    //Aux Space: O(1)
     #region SelectionSort
 
     public static IEnumerator SelectionSort<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
@@ -107,6 +112,8 @@ public static class SortingAlgorithms
 
     #endregion
 
+    //Time Complexity: O(n log n)
+    //Aux Space: O(n)
     #region CocktailShakerSort
 
     public static IEnumerator CocktailSort<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
@@ -153,6 +160,8 @@ public static class SortingAlgorithms
 
     #endregion
 
+    //Time Complexity: O(n²)
+    //Aux Space: O(1)
     #region QuickSort
 
     public static IEnumerator QuickSort<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
@@ -189,6 +198,11 @@ public static class SortingAlgorithms
 
     #endregion
 
+    //Time Complexity: O(d * (n + b)) 
+    // d = Digit Count ((1, 10, 100) = 3).
+    // n = Array Size.
+    // b = Max numeric in numeric system (Decimal = 10 (0, 9))
+    //Aux Space: O(n + b)
     #region RadixSort(LSD)
         
     public static IEnumerator RadixSortLSD<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
@@ -204,15 +218,10 @@ public static class SortingAlgorithms
         
         for (int exp = 1; max / exp > 0; exp *= 10)
         {
-            IEnumerator countSortEnumerator = CountSort(vis, intData, 0, n - 1, exp, Color.green);
-            while (countSortEnumerator.MoveNext())
-                yield return null;
+           yield return CountSort(vis, intData, 0, n - 1, exp, Color.green);
             
             for (int i = 0; i < n; i++)
-            {
                 data[i] = (T)Convert.ChangeType(intData[i], typeof(T));
-                yield return vis.SetBarHeight(i, intData[i], Color.green);
-            }
         }
     }
 
@@ -254,6 +263,8 @@ public static class SortingAlgorithms
 
     #endregion
 
+    // Time Complexity: B: O(n log n), A: O(n * 1.25) / O(n * 1.5) & W: O(n²) 
+    // Espacio Auxiliar: O(1)
     #region ShellSort
 
     public static IEnumerator ShellSort<T>(SortVisualizer vis, IList<T> arr) where T : IComparable<T>
@@ -287,6 +298,8 @@ public static class SortingAlgorithms
 
     #endregion
 
+    //Time Complexity: W: O(?), A: O(n*n!) & B: O(n)
+    //Aux Space: O(1)
     #region BogoSort
 
     public static IEnumerator BogoSort<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
@@ -325,6 +338,11 @@ public static class SortingAlgorithms
 
     #endregion
 
+    //Time Complexity: O(d * (n + b))
+    // d = Digit Count ((1, 10, 100) = 3).
+    // n = Array Size.
+    // b = Max numeric in numeric system (Decimal = 10 (0, 9))
+    //Aux Space: O(n + b)
     #region RadixSort(MSD)
 
     public static IEnumerator RadixSortMSD<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
@@ -344,14 +362,13 @@ public static class SortingAlgorithms
 
     private static IEnumerator RadixSortMSD<T>(SortVisualizer vis, IList<T> data, int[] intData, int left, int right, int digit) where T : IComparable<T>
     {
-        if (left >= right || digit < 0) yield break;
+        if (left >= right || digit < 0) 
+            yield break;
 
         int exp = (int)Mathf.Pow(10, digit);
         
-        IEnumerator countSortEnumerator = CountSort(vis, intData, left, right, exp, Color.cyan);
-        while (countSortEnumerator.MoveNext())
-            yield return null;
-        
+        yield return CountSort(vis, intData, left, right, exp, Color.cyan);
+
         for (int i = left; i <= right; i++)
             data[i] = (T)Convert.ChangeType(intData[i], typeof(T));
         
@@ -366,11 +383,12 @@ public static class SortingAlgorithms
             if (bucketSize > 1)
                 yield return RadixSortMSD(vis, data, intData, start, start + bucketSize - 1, digit - 1);
             start += bucketSize;
+            
         }
     }
 
     #endregion
-
+    
     #region IntroSort
 
     public static IEnumerator IntroSort<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
@@ -468,7 +486,7 @@ public static class SortingAlgorithms
     }
 
     #endregion
-
+    
     #region AdaptiveMergeSort
 
     public static IEnumerator AdaptiveMergeSort<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
@@ -540,6 +558,8 @@ public static class SortingAlgorithms
 
     #endregion
 
+    // Time Complexity: O(n²)
+    // Aux Space: O(1)
     #region BubbleSort
 
     public static IEnumerator BubbleSort<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
@@ -563,6 +583,8 @@ public static class SortingAlgorithms
 
     #endregion
 
+    // Time Complexity: O(n²)
+    // Aux Space: O(1)
     #region GnomeSort
 
     public static IEnumerator GnomeSort<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
@@ -587,6 +609,8 @@ public static class SortingAlgorithms
 
     #endregion
 
+    //Time Complexity: O(n log n)
+    //Aux Space: O(n)
     #region MergeSort
 
     public static IEnumerator MergeSort<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
@@ -635,6 +659,8 @@ public static class SortingAlgorithms
 
     #endregion
 
+    //Time Complexity: O(n log n)
+    //Aux Space: O(log n) Recursive or O(1) using iterators
     #region HeapSort
 
     public static IEnumerator HeapSort<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
@@ -682,6 +708,8 @@ public static class SortingAlgorithms
 
     #endregion
 
+    //Time Complexity: O(n²)
+    //Aux Space: O(1)
     #region InsertionSort
 
     public static IEnumerator InsertionSort<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
