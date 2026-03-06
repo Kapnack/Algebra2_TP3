@@ -6,6 +6,10 @@ using UnityEngine;
 public static class SortingAlgorithms
 {
 
+    public static float result = 0;
+    public static float longOpetarions = 0;
+    public static float elementsMoved = 0;
+
     //Time Complexity: W: O(log²n)
     //Aux Space: O(n.log2n)
     #region BitonicSort
@@ -13,18 +17,18 @@ public static class SortingAlgorithms
     public static IEnumerator BitonicSort<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
     {
         int n = data.Count;
-        
+        uint addedData = 0;
         int powerOfTwo = 1;
         while (powerOfTwo < n) powerOfTwo <<= 1;
-        
-        T maxValue = data[0];
-        for (int i = 1; i < n; i++)
-            if (data[i].CompareTo(maxValue) > 0)
-                maxValue = data[i];
 
         List<T> paddedData = new(data);
+
+
+        addedData = Convert.ToUInt32(powerOfTwo - paddedData.Count);
+
         while (paddedData.Count < powerOfTwo)
-            paddedData.Add(maxValue);
+            paddedData.Add((T)Convert.ChangeType(double.MaxValue, typeof(T)));
+
 
         IEnumerator BitonicMerge(int low, int count, bool ascending)
         {
@@ -68,15 +72,14 @@ public static class SortingAlgorithms
 
 
         yield return BitonicSortRec(0, paddedData.Count, true);
-        
+
+        paddedData.RemoveRange(paddedData.Count - Convert.ToInt32(addedData), Convert.ToInt32(addedData));
+
         for (int i = 0; i < n; i++)
         {
-            if (!data[i].Equals(paddedData[i]))
-            {
-                data[i] = paddedData[i];
-                if (typeof(T) == typeof(float))
-                    yield return vis.SetBarHeight(i, (float)(object)data[i], Color.green);
-            }
+            data[i] = paddedData[i];
+
+            yield return vis.SetBarHeight(i, (float)(object)data[i], Color.green);
         }
     }
 
@@ -204,22 +207,22 @@ public static class SortingAlgorithms
     // b = Max numeric in numeric system (Decimal = 10 (0, 9))
     //Aux Space: O(n + b)
     #region RadixSort(LSD)
-        
+
     public static IEnumerator RadixSortLSD<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
     {
         int n = data.Count;
         if (n <= 1) yield break;
-        
+
         int[] intData = new int[n];
         for (int i = 0; i < n; i++)
             intData[i] = Convert.ToInt32(data[i]);
 
         int max = GetMax(intData);
-        
+
         for (int exp = 1; max / exp > 0; exp *= 10)
         {
-           yield return CountSort(vis, intData, 0, n - 1, exp, Color.green);
-            
+            yield return CountSort(vis, intData, 0, n - 1, exp, Color.green);
+
             for (int i = 0; i < n; i++)
                 data[i] = (T)Convert.ChangeType(intData[i], typeof(T));
         }
@@ -239,13 +242,13 @@ public static class SortingAlgorithms
         int n = right - left + 1;
         int[] output = new int[n];
         int[] count = new int[10];
-        
+
         for (int i = left; i <= right; i++)
             count[(data[i] / exp) % 10]++;
-        
+
         for (int i = 1; i < 10; i++)
             count[i] += count[i - 1];
-        
+
         for (int i = right; i >= left; i--)
         {
             int digit = (data[i] / exp) % 10;
@@ -253,7 +256,7 @@ public static class SortingAlgorithms
             output[pos] = data[i];
             count[digit]--;
         }
-        
+
         for (int i = 0; i < n; i++)
         {
             data[left + i] = output[i];
@@ -281,7 +284,7 @@ public static class SortingAlgorithms
                 while (j >= gap && arr[j - gap].CompareTo(temp) > 0)
                 {
                     arr[j] = arr[j - gap];
-                    
+
                     float height = Convert.ToSingle(arr[j]);
                     yield return vis.SetBarHeight(j, height, Color.red);
 
@@ -289,7 +292,7 @@ public static class SortingAlgorithms
                 }
 
                 arr[j] = temp;
-                
+
                 float tempHeight = Convert.ToSingle(temp);
                 yield return vis.SetBarHeight(j, tempHeight, Color.green);
             }
@@ -309,7 +312,7 @@ public static class SortingAlgorithms
         while (!IsSorted<T>(vis))
         {
             vis.PaintAllBars(Color.yellow);
-            yield return new WaitForSeconds(vis.speed);
+            yield return new WaitForSeconds(vis.speed * Time.deltaTime);
 
             for (int i = data.Count - 1; i > 0; i--)
             {
@@ -319,7 +322,7 @@ public static class SortingAlgorithms
                 yield return vis.SwitchBars(i, j);
             }
 
-            yield return new WaitForSeconds(vis.speed * 2f);
+            yield return new WaitForSeconds(vis.speed * Time.deltaTime);
         }
 
         vis.PaintAllBars(Color.green);
@@ -349,29 +352,29 @@ public static class SortingAlgorithms
     {
         int n = data.Count;
         if (n <= 1) yield break;
-            
+
         int[] intData = new int[n];
         for (int i = 0; i < n; i++)
             intData[i] = Convert.ToInt32(data[i]);
 
         int max = GetMax(intData);
         int maxDigits = max == 0 ? 1 : (int)Mathf.Floor(Mathf.Log10(max)) + 1;
-        
+
         yield return RadixSortMSD(vis, data, intData, 0, n - 1, maxDigits - 1);
     }
 
     private static IEnumerator RadixSortMSD<T>(SortVisualizer vis, IList<T> data, int[] intData, int left, int right, int digit) where T : IComparable<T>
     {
-        if (left >= right || digit < 0) 
+        if (left >= right || digit < 0)
             yield break;
 
         int exp = (int)Mathf.Pow(10, digit);
-        
+
         yield return CountSort(vis, intData, left, right, exp, Color.cyan);
 
         for (int i = left; i <= right; i++)
             data[i] = (T)Convert.ChangeType(intData[i], typeof(T));
-        
+
         int[] count = new int[10];
         for (int i = left; i <= right; i++)
             count[(intData[i] / exp) % 10]++;
@@ -383,12 +386,12 @@ public static class SortingAlgorithms
             if (bucketSize > 1)
                 yield return RadixSortMSD(vis, data, intData, start, start + bucketSize - 1, digit - 1);
             start += bucketSize;
-            
+
         }
     }
 
     #endregion
-    
+
     #region IntroSort
 
     public static IEnumerator IntroSort<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
@@ -486,7 +489,7 @@ public static class SortingAlgorithms
     }
 
     #endregion
-    
+
     #region AdaptiveMergeSort
 
     public static IEnumerator AdaptiveMergeSort<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
@@ -595,11 +598,14 @@ public static class SortingAlgorithms
         {
             if (index == 0)
                 index++;
-            if (data[index].CompareTo(data[index - 1]) > 0)
+
+            if (data[index].CompareTo(data[index - 1]) >= 0)
                 index++;
             else
             {
                 (data[index], data[index - 1]) = (data[index - 1], data[index]);
+
+                yield return vis.PaintBars(index, index - 1, Color.red);
                 yield return vis.SwitchBars(index, index - 1);
 
                 index--;
@@ -619,42 +625,66 @@ public static class SortingAlgorithms
     }
 
     private static IEnumerator MergeSort<T>(SortVisualizer vis, IList<T> data, int left, int right)
-        where T : IComparable<T>
+    where T : IComparable<T>
     {
         if (left >= right)
             yield break;
 
         int mid = (left + right) / 2;
+        longOpetarions++;
 
-        yield return MergeSort(vis, data, left, mid);
+        IEnumerator leftSort = MergeSort(vis, data, left, mid);
+        while (leftSort.MoveNext())
+        {
+            yield return leftSort.Current;
+        }
 
-        yield return MergeSort(vis, data, mid + 1, right);
+        IEnumerator rightSort = MergeSort(vis, data, mid + 1, right);
+        while (rightSort.MoveNext())
+        {
+            yield return rightSort.Current;
+        }
 
-        List<T> merged = new List<T>();
-        int i = left, j = mid + 1;
+        List<T> merged = new List<T>(right - left + 1);
+
+        int i = left;
+        int j = mid + 1;
 
         while (i <= mid && j <= right)
         {
             yield return vis.PaintBars(i, j, Color.blue);
 
             if (data[i].CompareTo(data[j]) <= 0)
-                merged.Add(data[i++]);
+            {
+                merged.Add(data[i]);
+                i++;
+            }
             else
-                merged.Add(data[j++]);
+            {
+                merged.Add(data[j]);
+                j++;
+            }
         }
 
         while (i <= mid)
-            merged.Add(data[i++]);
+        {
+            merged.Add(data[i]);
+            i++;
+        }
 
         while (j <= right)
-            merged.Add(data[j++]);
+        {
+            merged.Add(data[j]);
+            j++;
+        }
 
         for (int k = 0; k < merged.Count; k++)
         {
             data[left + k] = merged[k];
-
             yield return vis.SetBarHeight(left + k, Convert.ToSingle(merged[k]), Color.green);
         }
+
+        result = longOpetarions * Mathf.Log(2, longOpetarions);
     }
 
     #endregion
@@ -701,7 +731,7 @@ public static class SortingAlgorithms
         {
             (data[i], data[largest]) = (data[largest], data[i]);
             yield return vis.SwitchBars(largest, i);
-                
+
             yield return Heapify(vis, data, n, largest);
         }
     }

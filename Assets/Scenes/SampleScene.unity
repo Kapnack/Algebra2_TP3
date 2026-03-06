@@ -420,7 +420,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   barPrefab: {fileID: 8723599569498342673, guid: a74f3158a3069dd41b0e4767785b96e0, type: 3}
-  amount: 30
+  amount: 20
   spacing: 0.5
   speed: 0.02
   values: []

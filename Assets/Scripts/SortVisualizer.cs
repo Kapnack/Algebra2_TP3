@@ -16,6 +16,8 @@ public struct Bar
 
 public class SortVisualizer : MonoBehaviour
 {
+    System.Random random = new System.Random();
+
     [Header("Settings")] 
     public GameObject barPrefab;
     public int amount = 30;
@@ -33,7 +35,7 @@ public class SortVisualizer : MonoBehaviour
         
         for (int i = 0; i < amount; i++)
         {
-            float height = Random.Range(1f, 10f);
+            float height = random.Next(1, 10);
             values[i] = height;
 
             GameObject bar = Instantiate(barPrefab, new Vector3(i * spacing, 0, 0), Quaternion.identity,
@@ -64,7 +66,7 @@ public class SortVisualizer : MonoBehaviour
         
         (_bars[a], _bars[b]) = (_bars[b], _bars[a]);
         
-        yield return new WaitForSeconds(speed);
+        yield return new WaitForSeconds(Time.deltaTime * speed);
     }
 
     public IEnumerator SetBarHeight(int index, float newHeight, Color color)
@@ -74,7 +76,7 @@ public class SortVisualizer : MonoBehaviour
         bar.mat.color = color;
         values[index] = newHeight;
 
-        yield return new WaitForSeconds(speed);
+        yield return new WaitForSeconds(Time.deltaTime * speed);
 
         bar.mat.color = Color.white;
     }
@@ -84,7 +86,7 @@ public class SortVisualizer : MonoBehaviour
         _bars[i].mat.color = color;
         _bars[j].mat.color = color;
         
-        yield return new WaitForSeconds(speed);
+        yield return new WaitForSeconds(Time.deltaTime * speed);
         
         _bars[i].mat.color = Color.white;
         _bars[j].mat.color = Color.white;
