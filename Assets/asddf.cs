@@ -41,21 +41,10 @@ public class asddf : MonoBehaviour
 
         a = 0;
         for (int i = 0; i < n; i++)
-        {
-            temp = n;
-            for (temp /= 2; temp > 1;)
+            for (int aux = n; aux > 1; aux /= 2)
                 a++;
-          
-        }
 
         Debug.Log(a);
         Debug.Log(n * Mathf.Log(n, 2));
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }
