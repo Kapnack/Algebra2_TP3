@@ -10,8 +10,8 @@ public static class SortingAlgorithms
     public static float longOpetarions = 0;
     public static float elementsMoved = 0;
 
-    //Time Complexity: W: O(log²n)
-    //Aux Space: O(n.log2n)
+    //Time Complexity: B: O(log²n), A: O(log²n), W: O(log²n)
+    //Aux Space: O(n·log n)
     #region BitonicSort
 
     public static IEnumerator BitonicSort<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
@@ -85,7 +85,7 @@ public static class SortingAlgorithms
 
     #endregion
 
-    //Time Complexity: O(n2)
+    //Time Complexity: B: O(n²), A: O(n²), W: O(n²)
     //Aux Space: O(1)
     #region SelectionSort
 
@@ -115,8 +115,8 @@ public static class SortingAlgorithms
 
     #endregion
 
-    //Time Complexity: O(n²)
-    //Aux Space: O(n)
+    //Time Complexity: B: O(n), A: O(n²), W: O(n²)
+    //Aux Space: O(1)
     #region CocktailSort
 
     public static IEnumerator CocktailSort<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
@@ -163,8 +163,8 @@ public static class SortingAlgorithms
 
     #endregion
 
-    //Time Complexity: O(n²)
-    //Aux Space: O(1)
+    //Time Complexity: B: O(n log n), A: O(n log n), W: O(n²)
+    //Aux Space: O(log n)  (pila de recursión)
     #region QuickSort
 
     public static IEnumerator QuickSort<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
@@ -201,7 +201,7 @@ public static class SortingAlgorithms
 
     #endregion
 
-    //Time Complexity: O(d * (n + b)) 
+    //Time Complexity: B: O(d·(n+b)), A: O(d·(n+b)), W: O(d·(n+b))
     // d = Digit Count ((1, 10, 100) = 3).
     // n = Array Size.
     // b = Max numeric in numeric system (Decimal = 10 (0, 9))
@@ -266,8 +266,8 @@ public static class SortingAlgorithms
 
     #endregion
 
-    // Time Complexity: B: O(n log n), A: O(n * 1.25) / O(n * 1.5) & W: O(n²) 
-    // Espacio Auxiliar: O(1)
+    // Time Complexity: B: O(n log n), A: O(n^1.25) ~ O(n^1.5), W: O(n²)
+    // Aux Space: O(1)
     #region ShellSort
 
     public static IEnumerator ShellSort<T>(SortVisualizer vis, IList<T> arr) where T : IComparable<T>
@@ -301,7 +301,7 @@ public static class SortingAlgorithms
 
     #endregion
 
-    //Time Complexity: W: O(?), A: O(n*n!) & B: O(n)
+    //Time Complexity: B: O(n), A: O(n·n!), W: sin cota superior (no garantiza terminar)
     //Aux Space: O(1)
     #region BogoSort
 
@@ -330,7 +330,7 @@ public static class SortingAlgorithms
 
     #endregion
 
-    //Time Complexity: O(d * (n + b))
+    //Time Complexity: B: O(d·(n+b)), A: O(d·(n+b)), W: O(d·(n+b))
     // d = Digit Count ((1, 10, 100) = 3).
     // n = Array Size.
     // b = Max numeric in numeric system (Decimal = 10 (0, 9))
@@ -381,6 +381,8 @@ public static class SortingAlgorithms
 
     #endregion
 
+    //Time Complexity: B: O(n log n), A: O(n log n), W: O(n log n)
+    //Aux Space: O(log n)  (fallback controlado por maxDepth, sin peor caso O(n²))
     #region IntroSort
 
     public static IEnumerator IntroSort<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
@@ -479,6 +481,8 @@ public static class SortingAlgorithms
 
     #endregion
 
+    //Time Complexity: B: O(n), A: O(n log n), W: O(n log n)
+    //Aux Space: O(n)
     #region AdaptiveMergeSort
 
     public static IEnumerator AdaptiveMergeSort<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
@@ -550,7 +554,7 @@ public static class SortingAlgorithms
 
     #endregion
 
-    // Time Complexity: O(n²)
+    // Time Complexity: B: O(n²) (esta versión no tiene early-exit por 'swapped'), A: O(n²), W: O(n²)
     // Aux Space: O(1)
     #region BubbleSort
 
@@ -575,7 +579,7 @@ public static class SortingAlgorithms
 
     #endregion
 
-    // Time Complexity: O(n²)
+    // Time Complexity: B: O(n), A: O(n²), W: O(n²)
     // Aux Space: O(1)
     #region GnomeSort
 
@@ -604,7 +608,7 @@ public static class SortingAlgorithms
 
     #endregion
 
-    //Time Complexity: O(n log n)
+    //Time Complexity: B: O(n log n), A: O(n log n), W: O(n log n)
     //Aux Space: O(n)
     #region MergeSort
 
@@ -678,8 +682,8 @@ public static class SortingAlgorithms
 
     #endregion
 
-    //Time Complexity: O(n log n)
-    //Aux Space: O(log n) Recursive or O(1) using iterators
+    //Time Complexity: B: O(n log n), A: O(n log n), W: O(n log n)
+    //Aux Space: O(1) recursivo real; O(log n) por la pila de recursión de Heapify
     #region HeapSort
 
     public static IEnumerator HeapSort<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
@@ -727,7 +731,7 @@ public static class SortingAlgorithms
 
     #endregion
 
-    //Time Complexity: O(n²)
+    //Time Complexity: B: O(n), A: O(n²), W: O(n²)
     //Aux Space: O(1)
     #region InsertionSort
 
