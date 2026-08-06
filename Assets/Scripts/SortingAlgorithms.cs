@@ -79,7 +79,7 @@ public static class SortingAlgorithms
         {
             data[i] = paddedData[i];
 
-            yield return vis.SetBarHeight(i, (float)(object)data[i], Color.green);
+            yield return vis.SetBarHeight(i, Convert.ToSingle(data[i]), Color.green);
         }
     }
 
@@ -115,9 +115,9 @@ public static class SortingAlgorithms
 
     #endregion
 
-    //Time Complexity: O(n log n)
+    //Time Complexity: O(n²)
     //Aux Space: O(n)
-    #region CocktailShakerSort
+    #region CocktailSort
 
     public static IEnumerator CocktailSort<T>(SortVisualizer vis, IList<T> data) where T : IComparable<T>
     {
@@ -309,7 +309,7 @@ public static class SortingAlgorithms
     {
         System.Random rand = new();
 
-        while (!IsSorted<T>(vis))
+        while (!IsSorted(data, 0, data.Count - 1))
         {
             vis.PaintAllBars(Color.yellow);
             yield return new WaitForSeconds(vis.speed * Time.deltaTime);
@@ -326,17 +326,6 @@ public static class SortingAlgorithms
         }
 
         vis.PaintAllBars(Color.green);
-    }
-
-    private static bool IsSorted<T>(SortVisualizer vis) where T : IComparable<T>
-    {
-        for (int i = 1; i < vis.values.Length; i++)
-        {
-            if (vis.values[i - 1] > vis.values[i])
-                return false;
-        }
-
-        return true;
     }
 
     #endregion
@@ -684,7 +673,7 @@ public static class SortingAlgorithms
             yield return vis.SetBarHeight(left + k, Convert.ToSingle(merged[k]), Color.green);
         }
 
-        result = longOpetarions * Mathf.Log(2, longOpetarions);
+        result = longOpetarions * Mathf.Log(longOpetarions, 2);
     }
 
     #endregion
